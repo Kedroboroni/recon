@@ -93,6 +93,14 @@ def openFile(parent):
         parent.setText(fileName)
 
 
+@Slot()
+def openFolder(parent):
+    options = QFileDialog.Options()
+    folderName = QFileDialog.getExistingDirectory(parent, options=options)
+    if folderName:
+        parent.setText(folderName)
+
+
 
 def recordingGeografyСoordinates(fileName, getInfo = None):
     workbook = openpyxl.load_workbook(fileName)
