@@ -3,4 +3,3 @@ openpyxl
 PySide6
 geopy
 numpy
-auto-py-to-exe
