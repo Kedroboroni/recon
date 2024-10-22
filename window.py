@@ -6,16 +6,19 @@
 
 from widgets import Lable, Button, GroupBox, LineEdit, Widget
 from PySide6.QtWidgets import QMainWindow
-from events import getCoordinateRequest, transformationCoordinate, transformationDecimalOnDegries, filingTableCoordinate, writeCoordinateToExcel, openFile, recordingGeografyСoordinates, openFolder
+from events import filingTableCoordinate, openFile, recordingGeografyСoordinates, openFolder, generalAnalys
 from multiprocessing import Process
 import json
 
 
 with open("apiKey.json", "r", encoding = "UTF-8") as file:
-
     apiKey = json.load(file)["apiKey"]
 
 info = "Правила пользования программой.\nВ этой программе вы сможете преобразовать десятичные данные в нормальный вид и записать все в таблицу \nТак же найти коардинаты объекта по его названию, но не более 500 в сутки!!!! \\n1. Выбрать таблицу формата xlsx, с которой вы будете работаь"
+
+
+
+
 
 class MainWindow(QMainWindow):
     
@@ -23,8 +26,14 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.mainWindow()
         
+        
     def mainWindow(self):
         """Размещаем свои виджеты"""
+
+        self.pathFileMerge = r"C:\app\intelligance\FileXLSX\merge.xlsx"
+        self.pathFileEdit = r"C:\app\intelligance\FileXLSX\sort.xlsx"
+        self.pathFileEditNew =r"C:\app\intelligance\FileXLSX\sortCount.xlsx"
+
         centralWidget = Widget() #Создали центарльный виджет в котором будут располагаться другие виджеты
         self.setCentralWidget(centralWidget) #Разместили центральныйтвиджет в главном окне
 
@@ -38,8 +47,9 @@ class MainWindow(QMainWindow):
         ButtonTransformGD.clicked.connect(lambda: LabelError.setText("Еще так не может, надо? Обращайтесь!"))
         ButtonTransformDG = Button(GroupBoxUseCastomFuncion, text = "Пересчитать из десятичных в градусы", x = 308, y = 4, w = 300, h = 22)
         ButtonTransformDG.clicked.connect(lambda: recordingGeografyСoordinates(LineEditPathFile.text(), getInfo = LabelError))
-        ButtonParse = Button(GroupBoxUseCastomFuncion, text = "Найти коардинаты объекта по названию", x = 612, y = 4, w = 300, h = 22)
+        ButtonParse = Button(GroupBoxUseCastomFuncion, text = "Найти координаты объекта по названию", x = 612, y = 4, w = 300, h = 22)
         ButtonParse.clicked.connect(lambda: filingTableCoordinate(LineEditPathFile.text(), apiKey, getInfo = LabelError))
+
 
         GroupBoxChangeFile = GroupBox(centralWidget, x = 20, y = 524, w = 661, h = 30) #Создали коробку для размещения опций выбора источника потока/изображения/видео
         ButtonChangeFile = Button(GroupBoxChangeFile, text = "Выбрать", x = 4, y = 4, w = 96, h = 22) #Создали кнопку выбора
@@ -52,9 +62,10 @@ class MainWindow(QMainWindow):
         LineEditPathFolder= LineEdit(GroupBoxChangeFolder, x = 106, y = 4, w = 449, h = 22)
 
         GroupBoxUseCastomFuncionFolder = GroupBox(centralWidget, x = 4, y = 424, w =916 , h = 30) #Создали коробку для кнопок паузы, и возабновления
-        ButtonUseFuction1 = Button(GroupBoxUseCastomFuncionFolder, text = "Кнопка1", x = 4, y = 4, w = 300, h = 22)
-        ButtonUseFuction1.clicked.connect(lambda: LabelError.setText("Еще так не может, надо? Обращайтесь!"))
-        ButtonUseFuction2 = Button(GroupBoxUseCastomFuncionFolder, text = "Кнопка2", x = 308, y = 4, w = 300, h = 22)
+       
+        ButtonUseFuction1 = Button(GroupBoxUseCastomFuncionFolder, text = "Отбор и счет ОИ по России", x = 4, y = 4, w = 300, h = 22)
+        ButtonUseFuction1.clicked.connect(lambda: generalAnalys(LineEditPathFolder.text(), self.pathFileMerge, self.pathFileEdit, self.pathFileEditNew)) #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ButtonUseFuction2 = Button(GroupBoxUseCastomFuncionFolder, text = "Кнопка2", x = 308, y =4, w = 300, h = 22)
         ButtonUseFuction2.clicked.connect(lambda: LabelError.setText("Еще так не может, надо? Обращайтесь!"))
         ButtonUseFuction3 = Button(GroupBoxUseCastomFuncionFolder, text = "Кнопка3", x = 612, y = 4, w = 300, h = 22)
         ButtonUseFuction3.clicked.connect(lambda: LabelError.setText("Еще так не может, надо? Обращайтесь!"))
@@ -63,4 +74,3 @@ class MainWindow(QMainWindow):
         ButtonClose.clicked.connect(self.close) #Закрываем приложение
 
         LabelError = Lable(centralWidget, x = 20, y = 558, w = 661, h = 47)
-    
